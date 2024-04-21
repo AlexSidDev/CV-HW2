@@ -9,15 +9,18 @@ from im2col import conv_im2col
 
 def test_conv2d():
     image = np.random.randn(3, 256, 256)
-    kernel = np.random.randn(3, 5, 3, 3)
     bias = np.random.randn(5)
-    for stride in range(1, 6):
-        print('Testing with stride:', stride)
-        torch_conv_out = torch_conv(torch.tensor(image), torch.tensor(kernel.transpose(1, 0, 2, 3)),
-                                     torch.tensor(bias), stride).numpy()
-        out_conv = conv2d(image, kernel, bias, stride)
-        print('Is output equal to expected:', np.allclose(torch_conv_out, out_conv))
-        print('=' * 80)
+    for ksize in (3, 4):
+        kernel = np.random.randn(3, 5, ksize, ksize)
+        print('Testing kernel with size:', ksize)
+        for stride in range(1, 6):
+            print('Testing with stride:', stride)
+            torch_conv_out = torch_conv(torch.tensor(image), torch.tensor(kernel.transpose(1, 0, 2, 3)),
+                                         torch.tensor(bias), stride).numpy()
+            out_conv = conv2d(image, kernel, bias, stride)
+            print('Is output equal to expected:', np.allclose(torch_conv_out, out_conv))
+            print('=' * 80)
+        print()
 
 
 def test_equal_conv2d_and_im2col():
